@@ -24,6 +24,26 @@ UserSchema.virtual('postCount').get(function(){
 	return this.posts.length;
 });
 
+UserSchema.pre('remove', function(next){
+	const BlogPost = mongoose.model('blogPost');
+	BlogPost.remove({_id: {$in: this.blogPosts} })
+					.then(() => next());
+	
+
+});
+
 const User = mongoose.model('user', UserSchema);
 
 module.exports = User;
+
+
+// UserSchema.pre('remove', function(){
+// 	const BlogPost = mongoose.model('blogPost');
+// 	// this === 'juan' this is a reference to an instance of our user
+// 	// this.blogPosts is an array of all the ids of all the blog posts to delete
+// 	BlogPost.remove({_id: {$in: this.blogPosts} });	
+//					.then(() => next());
+// 	// $in: go through all the blog posts in the BlogPost collection and
+// 	// look at their ids, if the id is in this.blogPosts, remove that record
+
+// });
